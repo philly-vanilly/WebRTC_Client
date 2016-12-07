@@ -1,0 +1,6 @@
+{
+	"name": "Phils WebRTC Client",
+	"description": "app to test network communication with WebRTC",
+	"repository": "https://github.com/philly-vanilly/WebRTC",
+	"keywords": ["webrtc", "node"]
+}

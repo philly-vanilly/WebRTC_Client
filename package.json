@@ -1,0 +1,37 @@
+{
+  "name": "Phils-WebRTC-Client",
+  "version": "1.0.0",
+  "description": "project for testing webrtc communication for networking course at university",
+  "main": "web_server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+	"ws" : "^1.1.1",
+	"wscat" : "^1.1.0",
+	"serve-static":"^1.11.1",
+	"npm":"^3.8.6",
+	"node-static":"^0.7.9",
+	"connect":"^3.5.0"
+  },
+  "engines": {
+	"node": "6.9.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/philly-vanilly/WebRTC.git"
+  },
+  "keywords": [
+    "webrtc",
+    "webdev",
+    "js",
+    "node",
+    "websocket"
+  ],
+  "author": "Phil L.",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/philly-vanilly/WebRTC/issues"
+  },
+  "homepage": "https://github.com/philly-vanilly/WebRTC#readme"
+}
