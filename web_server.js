@@ -40,7 +40,7 @@ var WebSocketServer = require('ws').Server;
 //The WebSocket server takes an HTTP server as an argument so that it can listen for ‘upgrade’ events; so in the webserver you can just ... 
 //var HOST = location.origin.replace(/^http/, 'ws')
 //var ws = new WebSocket(HOST);
-var wss = new WebSocketServer({ httpServer: http_server });
+var wss = new WebSocketServer({ server: http_server });
 
 var users = {}; //hashmap (js-object) of user-id-key and connection-value (containing name of other participant)
 
