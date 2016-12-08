@@ -16,6 +16,7 @@ var ServerAPI = ( config.ssl ) ? require('https') : require('http');
 // Web serving setup with express:
 var app = express();
 app.set('view engine', 'ejs'); // set the view engine to ejs
+app.use(express.static(__dirname));
 app.get('/', function(req, res) { // use res.render to load up an ejs view file
     res.render('index'); // index page
 });
@@ -25,9 +26,10 @@ if ( config.ssl ) {
     webServer = ServerAPI.createServer( { // providing server with  SSL key/cert:
         key: fs.readFileSync(config.keyPath, 'utf8'),
         cert: fs.readFileSync(config.certPath, 'utf8')
-    }, app ).listen( config.port );
+    }, app );
+    webServer.listen( config.port );
 } else {
-    app = ServerAPI.createServer( app ).listen( config.port );
+    webServer = ServerAPI.createServer( app ).listen( config.port );
 }
 
 
@@ -50,7 +52,7 @@ if ( config.ssl ) {
 
 //SIGNALLING SERVER
 var WebSocketServer = require('ws').Server;
-var wss = new WebSocketServer({ server:app });
+var wss = new WebSocketServer({ server:webServer });
 
 var users = {}; //hashmap (js-object) of user-id-key and connection-value (containing name of other participant)
 
