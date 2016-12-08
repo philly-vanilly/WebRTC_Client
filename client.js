@@ -2,13 +2,14 @@
  * Created by Phil on 05.12.2016.
  */
 
-//reference to running signalling server, NOT establishing a new server:
+// var socket_url = location.origin.replace(/^http/, 'ws');
+//var socket_url = 'ws://localhost:1337';
+var socket_url_parts = location.origin.split(":");
+socket_url_parts[0] = 'ws:';
+socket_url_parts[2] = ':1337';
+var socket_url = socket_url_parts[0].concat(socket_url_parts[1]).concat(socket_url_parts[2]);
 
-var locationInWeb = location.origin.replace(/^http/, 'ws');
-//var connection = new WebSocket('ws://localhost:8888');
-var connection = new WebSocket(locationInWeb);
-console.log(locationInWeb);
-
+var connection = new WebSocket(socket_url);
 var name = "";
 
 var loginPage = document.querySelector('#login-page'),

@@ -8,44 +8,32 @@
 
 //WEBSERVER
 var express = require('express');
-var http_server = express();
-
+var app = express();
 // set the port of our application
 // process.env.PORT lets the port be set by Heroku
 var port = process.env.PORT || 8080;
-
 // set the view engine to ejs
-http_server.set('view engine', 'ejs');
-
+app.set('view engine', 'ejs');
 // make express look in the public directory for assets (css/js/img)
-http_server.use(express.static(__dirname));
-
+app.use(express.static(__dirname));
 // set the home page route
-http_server.get('/', function(req, res) {
-
+app.get('/', function(req, res) {
     // ejs render automatically looks in the views folder
     res.render('index');
 });
-
-http_server.listen(port, function() {
-    console.log('Our app is running on port: ' + port);
+app.listen(port, function() {
+    console.log('Our web server is running on http://localhost:' + port);
 });
 
 
 //SIGNALLING SERVER
 var WebSocketServer = require('ws').Server;
-//var port = process.env.PORT || 8080;
-//var wss = new WebSocketServer({ port: port });
-
-//The WebSocket server takes an HTTP server as an argument so that it can listen for ‘upgrade’ events; so in the webserver you can just ... 
-//var HOST = location.origin.replace(/^http/, 'ws')
-//var ws = new WebSocket(HOST);
-var wss = new WebSocketServer({ server: http_server });
+const wss = new WebSocketServer({ port:1337 });
 
 var users = {}; //hashmap (js-object) of user-id-key and connection-value (containing name of other participant)
 
 wss.on('listening', function () {
-    console.log("Signalling server started on port " + port);
+    console.log("Signalling server started on port " + 1337);
 });
 
 wss.on('connection', function (connection) {
