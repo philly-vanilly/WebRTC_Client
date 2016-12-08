@@ -1,39 +1,58 @@
-// var connect = require('connect');
-// var serveStatic = require('serve-static');
-//
-// // __dirname is a global object !!!!!!!!!!!!
-// connect().use(serveStatic(__dirname)).listen(1337, function(){
-//     console.log('Webserver running on port 1337.');
-// });
+"use strict";
+var fs = require('fs');
+
+const config = {
+    ssl: true,
+    port: process.env.PORT || 8080,
+    privateKey : fs.readFileSync('sslcert/key.pem', 'utf8'),
+    certificate : fs.readFileSync('sslcert/cert.pem', 'utf8')
+};
+
+var processRequest = function(req, res) {
+    console.log("Webserver running on port " + config.port);
+
+    res.writeHead(200);
+    res.end("Webserver running on port " + config.port);
+};
 
 //WEBSERVER
-var express = require('express');
-var app = express();
-// set the port of our application
-// process.env.PORT lets the port be set by Heroku
-var port = process.env.PORT || 8080;
-// set the view engine to ejs
-app.set('view engine', 'ejs');
-// make express look in the public directory for assets (css/js/img)
-app.use(express.static(__dirname));
-// set the home page route
-app.get('/', function(req, res) {
-    // ejs render automatically looks in the views folder
-    res.render('index');
-});
-app.listen(port, function() {
-    console.log('Our web server is running on http://localhost:' + port);
-});
+const httpServ = ( config.ssl ) ? require('https') : require('http');
+var app = null;
+if ( config.ssl ) {
+    app = httpServ.createServer({ // providing server with  SSL key/cert:
+        key: config.privateKey,
+        cert: config.certificate
+    }, processRequest ).listen( config.port );
+} else {
+    app = httpServ.createServer( processRequest ).listen( config.port );
+}
 
+
+// var express = require('express');
+// var app = express();
+// // set the port of our application
+// // process.env.PORT lets the port be set by Heroku
+// // set the view engine to ejs
+// app.set('view engine', 'ejs');
+// // make express look in the public directory for assets (css/js/img)
+// app.use(express.static(__dirname));
+// // set the home page route
+// app.get('/', function(req, res) {
+//     // ejs render automatically looks in the views folder
+//     res.render('index');
+// });
+// app.listen(port, function() {
+//     console.log('Our web server is running on http://localhost:' + port);
+// });
 
 //SIGNALLING SERVER
-var WebSocketServer = require('ws').Server;
-const wss = new WebSocketServer({ port:1337 });
+const WebSocketServer = require('ws').Server;
+const wss = new WebSocketServer({ server:app });
 
 var users = {}; //hashmap (js-object) of user-id-key and connection-value (containing name of other participant)
 
 wss.on('listening', function () {
-    console.log("Signalling server started on port " + 1337);
+    console.log("Signalling server started on port " + config.port);
 });
 
 wss.on('connection', function (connection) {

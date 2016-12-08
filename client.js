@@ -2,12 +2,12 @@
  * Created by Phil on 05.12.2016.
  */
 
-// var socket_url = location.origin.replace(/^http/, 'ws');
+var socket_url = location.origin.replace(/^http/, 'ws');
 //var socket_url = 'ws://localhost:1337';
-var socket_url_parts = location.origin.split(":");
-socket_url_parts[0] = 'ws:';
-socket_url_parts[2] = ':1337';
-var socket_url = socket_url_parts[0].concat(socket_url_parts[1]).concat(socket_url_parts[2]);
+// var socket_url_parts = location.origin.split(":");
+// socket_url_parts[0] = 'wss:';
+// socket_url_parts[2] = ':1337';
+// var socket_url = socket_url_parts[0].concat(socket_url_parts[1]).concat(socket_url_parts[2]);
 
 var connection = new WebSocket(socket_url);
 var name = "";
