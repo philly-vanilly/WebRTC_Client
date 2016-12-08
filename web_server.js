@@ -1,30 +1,33 @@
 "use strict";
 var fs = require('fs');
+var connect = require('connect');
+var express = require('express');
 
 const config = {
-    ssl: true,
+    ssl: false,
     port: process.env.PORT || 8080,
-    privateKey : fs.readFileSync('sslcert/key.pem', 'utf8'),
-    certificate : fs.readFileSync('sslcert/cert.pem', 'utf8')
-};
-
-var processRequest = function(req, res) {
-    console.log("Webserver running on port " + config.port);
-
-    res.writeHead(200);
-    res.end("Webserver running on port " + config.port);
+    keyPath : 'sslcert/key.pem',
+    certPath : 'sslcert/cert.pem'
 };
 
 //WEBSERVER
-const httpServ = ( config.ssl ) ? require('https') : require('http');
-var app = null;
+var ServerAPI = ( config.ssl ) ? require('https') : require('http');
+
+// Web serving setup with express:
+var app = express();
+app.set('view engine', 'ejs'); // set the view engine to ejs
+app.get('/', function(req, res) { // use res.render to load up an ejs view file
+    res.render('index'); // index page
+});
+
+var webServer = null;
 if ( config.ssl ) {
-    app = httpServ.createServer({ // providing server with  SSL key/cert:
-        key: config.privateKey,
-        cert: config.certificate
-    }, processRequest ).listen( config.port );
+    webServer = ServerAPI.createServer( { // providing server with  SSL key/cert:
+        key: fs.readFileSync(config.keyPath, 'utf8'),
+        cert: fs.readFileSync(config.certPath, 'utf8')
+    }, app ).listen( config.port );
 } else {
-    app = httpServ.createServer( processRequest ).listen( config.port );
+    app = ServerAPI.createServer( app ).listen( config.port );
 }
 
 
@@ -46,8 +49,8 @@ if ( config.ssl ) {
 // });
 
 //SIGNALLING SERVER
-const WebSocketServer = require('ws').Server;
-const wss = new WebSocketServer({ server:app });
+var WebSocketServer = require('ws').Server;
+var wss = new WebSocketServer({ server:app });
 
 var users = {}; //hashmap (js-object) of user-id-key and connection-value (containing name of other participant)
 
